@@ -1,0 +1,48 @@
+body{
+    padding: 20px;
+    margin: 0 20px;
+    background-color: #dedede;
+    font:  normal 16px Arial,Hlvetica,sans-serif;
+}
+h1{
+    color: #613d23;
+}
+#main{
+    width: 60%;
+    float: left;
+    padding: 15px;
+    box-sizing: border-box;
+  /*  border-right: 2px #613d23 solid;*/
+}
+
+#sidebar{
+    width: 40%;
+    float: right;
+    background-color: #f8f283;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.my-form label{
+    display: block;
+}
+.my-form input[type="text"],[type="number"],[type="tel"],[type="email"], .my-form textarea{
+    padding: 8px;
+    width: 90%;
+}
+.form-group{
+    padding-bottom: 15px;
+}
+.my-form input[type="submit"]{
+    background-color:  #613d23;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+}
+#sidebar h1{
+    text-align: center;
+    text-decoration: underline;
+}
+#sidebar p,h2{
+    padding: 0 10px;
+}
