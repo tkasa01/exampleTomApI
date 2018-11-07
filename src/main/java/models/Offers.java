@@ -1,10 +1,13 @@
 package main.java.models;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-@XmlRootElement(name="offers")
+@XmlRootElement
 public class Offers {
     private int id;
     private int person_id;
@@ -13,17 +16,17 @@ public class Offers {
     private double price;
     private Date startDate;
     private Date endDate;
-
-    private boolean status;
-    private boolean cancelled = false;
+    private boolean cancelled;
+    private Map<Integer, Comments> comments = new HashMap<>();
 
     public Offers(){}
-    public Offers(int newId, int person, String newNameOfTheOffer, String newDescription, double newPrice){
+    public Offers(int newId,  String newNameOfTheOffer, String newDescription, double newPrice){
         id = newId;
-        person_id = person;
+       // person_id = person;
         nameOfTheOffer = newNameOfTheOffer;
         description = newDescription;
         price = newPrice;
+        cancelled = false;
         startDate = new Date();
     }
 
@@ -43,10 +46,7 @@ public class Offers {
     public Date getEndDate(){
         return endDate;
     }
-    public boolean isStatus(){
-        return status;
-    }
-    public boolean getCancellation(){
+    public boolean isCancelled() {
         return cancelled;
     }
 
@@ -64,36 +64,58 @@ public class Offers {
         this.description = description;
     }
     public void setPrice(double price){this.price = price;}
-   // public void setStartDate(int startDate){
-    //    this.startDate = startDate;
-   // }
-
-    public void setStatus(boolean status){
-        this.status = status;
+    public void setStartDate(Date startDate){
+        this.startDate = startDate;
     }
+
+
+   /* public void setTimer(int months){
+        Timer timer = new Timer();
+        TimerTask cancel ;
+        timer.schedule(new PeriodicTask(), startDate, 3);
+    }*/
 
     //The method return expired date for  the offer
-    public Date setExpiredDate(int startDate, int endDate){
-        Date date = new Date();
+    public Date setExpiredDate(){
         Calendar calendar = Calendar.getInstance();
-        calendar.set(startDate, endDate);
+        calendar.setTime(startDate);
         calendar.add(Calendar.MONTH, 3);
-        java.util.Date expiredDate = calendar.getTime();
-        return expiredDate;
+        endDate = calendar.getTime();
+        return endDate;
     }
-    public void setCancelled(){
-        if(cancelled){
+
+    public boolean checkIfExpired(Date expired){
+        Date currentDay = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(endDate);
+        return !currentDay.before(endDate);
+    }
+
+    public void setCancelled() {
+        if(!checkIfExpired(endDate)){
             cancelled = true;
-        }else {
-            System.out.println("The offer is already cancelled");
         }
     }
 
-    @Override
-    public String toString(){
-        return id + ": " + nameOfTheOffer + " " + description + "the price:  £ " + price + "."
-                + "The expired date: " + endDate;
+    @XmlTransient
+    public Map<Integer, Comments> getComments(){
+        return comments;
     }
 
+    public void setComments(Map<Integer, Comments> comments){
+        this.comments = comments;
+    }
+    public static void main(String [] args){
+        Offers of = new Offers();
+        of.setId(1);
+        of.setNameOfTheOffer("Desk");
+        Date st = new Date();
+        of.setStartDate(st);
+        of.setExpiredDate();
+
+        System.out.println("Offer: "+ of.getNameOfTheOffer());
+        System.out.println("Start day: " + of.getStartDate());
+        System.out.println("End date: " + of.getEndDate() );
+    }
 
 }
