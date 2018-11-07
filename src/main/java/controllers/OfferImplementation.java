@@ -1,103 +1,86 @@
 package main.java.controllers;
-import main.java.models.Offers;
-import main.java.models.OffersResponse;
-import main.java.service.OffersServ;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
+import main.java.database.Database;
+import main.java.models.Offers;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+public class OfferImplementation {
 
-@Path("/offers")
-@Consumes(MediaType.APPLICATION_JSON)
-public class OfferImplementation  implements OffersService {
-
-    private static Map<Integer, Offers> adv = new HashMap<Integer, Offers>();
-    OffersServ textOffers = new OffersServ();
+    private Map<Integer, Offers> offersMap = Database.getOffers();
 
 
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    public List<Offers> getOffers(){
-        return textOffers.getOffers();
+
+    //constructor
+    public OfferImplementation(){
+        offersMap.put(1, new Offers( 1, "desc", "very good desc vas on the sale.", 300.00));
+        offersMap.put(2, new Offers(2,"car", "white, big car on the sale!", 12000.50));
     }
 
+    public List<Offers> getAllOffers() {
 
-
-    @POST
-    @Produces(MediaType.APPLICATION_XML)
-    public String addMessage(){
-        return "POST works! fom offers!!!" ;
+        return new ArrayList<Offers>(offersMap.values());
     }
 
+    public List<Offers> getAllOffersLastPeriod(int month) {
+        List<Offers> offerForLastPeriod = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        for(Offers offer : offersMap.values()){
+            cal.setTime(offer.getStartDate());
+            if ( cal.get(Calendar.MONTH) == month){
+                offerForLastPeriod.add(offer);
+            }
+        }
+        return  offerForLastPeriod;
+    }
 
-    @Override
+    public List<Offers>getAllOffersPaginated(int start, int size){
+        List<Offers> list = new ArrayList<Offers>(offersMap.values());
+        if(start + size > list.size())
+            return new ArrayList<Offers>();
+        return list.subList(start, start + size);
+
+    }
+
     public Offers getOffer(int id) {
-        return null;
+        return offersMap.get(id);
+
     }
 
-    @Override
-    @Path("/addOffer")
-    @POST
-    public OffersResponse addOffer(Offers offer) {
-        OffersResponse response = new OffersResponse();
-        if(adv.get(offer.getId()) != null){
-            response.setStatus(false);
-            response.setMessage("The person already exists");
-            return  response;
+    public Offers addOffer(Offers offer) {
+        offer.setId(offersMap.size() + 1); //set the message by adding one to get the one more number for the new message
+        offersMap.put(offer.getId(), offer); //put the new message to the Map
+
+        return offer;
+    }
+
+    public Offers updateOffer(Offers offer) {
+        if (offer.getId() <= 0) {
+            return null;
         }
-        adv.put(offer.getId(), offer);
-        response.setStatus(true);
-        response.setMessage("The person is created.");
-        return response;
-    }
-
-    @Override
-    public OffersResponse cancelledOffer(int id) {
-        return null;
+        offersMap.put(offer.getId(), offer);
+        return offer;
     }
 
 
-    @Override
-    public Offers[] getAllOffers() {
-       return new Offers[0];
-  }
-
-    @Override
-    public Offers getExpiredDare(int id) {
-        return null;
+    public void deleteOffer(int id) {
+         offersMap.remove(id);
     }
-
-/*
-    @GET
-    @Path("/{id}/getOffer")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Offers getOffer(@PathParam("id") int id){
-        Offers adv = new Offers(2, 1, "adv","advrt, blabla", 26.90);
-        adv.setExpiredDate(20/4/2018, 20/7/2018);
-        return  adv;
-
-    }*/
-
-   /* @GET
-    @Path("/{id}/getOffer")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getOffer() {
-        try{
-            JsonObjectBuilder b = Json.createObjectBuilder();
-            b.add("id",2);
-            b.add("nameOfTheOffer", "adv");
-            b.add("description", "avdert, blabla");
-            b.add("price", 238.50);
-            b.add("startDate", 20/4/2018);
-            b.add("endDate", 20/7/2018);
-
-            return  b.build().toString();
-        }catch (Exception e){
-            return "{\"error\":\""+ e.toString()+"\"}";
+//=============================
+    public Offers cancelOffer(Offers offer) throws InterruptedException {
+        if(!offer.checkIfExpired(offer.getEndDate())){
+            offersMap.wait();
+        }else {
+            offersMap.notify();
         }
-    }*/
+        return offer;
+    }
 
 }
+
+
+
+
