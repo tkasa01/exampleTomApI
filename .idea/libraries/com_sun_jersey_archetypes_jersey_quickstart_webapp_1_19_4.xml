@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="com.sun.jersey.archetypes:jersey-quickstart-webapp:1.19.4" type="repository">
+    <properties maven-id="com.sun.jersey.archetypes:jersey-quickstart-webapp:1.19.4" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jersey-quickstart-webapp-1.19.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

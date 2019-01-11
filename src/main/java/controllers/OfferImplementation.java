@@ -1,5 +1,6 @@
 package main.java.controllers;
 
+import com.sun.java.swing.action.CancelAction;
 import main.java.database.Database;
 import main.java.models.Offers;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 public class OfferImplementation {
 
     private Map<Integer, Offers> offersMap = Database.getOffers();
-
+    CancelAction request = new CancelAction();
 
 
     //constructor
@@ -70,13 +71,17 @@ public class OfferImplementation {
          offersMap.remove(id);
     }
 //=============================
-    public Offers cancelOffer(Offers offer) throws InterruptedException {
+    public void cancelOffer(int id) throws InterruptedException {
+        Offers offer = getOffer(id);
+        CancelAction request = new CancelAction();
+        
         if(!offer.checkIfExpired(offer.getEndDate())){
-            offersMap.wait();
+            //request.getTask(();
+            //offersMap.wait();
         }else {
             offersMap.notify();
         }
-        return offer;
+
     }
 
 }

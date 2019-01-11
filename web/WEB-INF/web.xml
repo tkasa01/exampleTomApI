@@ -7,7 +7,7 @@
     <display-name>exampleTomAPI</display-name>
 
     <servlet>
-        <servlet-name>exampleTomAPI</servlet-name>
+        <servlet-name>Jersey Rest Service</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
@@ -15,15 +15,9 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
     <servlet-mapping>
-        <servlet-name>exampleTomAPI</servlet-name>
+        <servlet-name>Jersey Rest Service</servlet-name>
         <url-pattern>/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>watermelon</servlet-name>
-        <url-pattern>/watermelon/*</url-pattern>
     </servlet-mapping>
 
 

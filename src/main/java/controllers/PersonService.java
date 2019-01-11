@@ -3,7 +3,7 @@ import main.java.models.Person;
 
 public interface PersonService {
     public PersonResponse addPerson(Person user);
-    public PersonResponse deletePerson(int id);
-    public Person getPerson(int id);
+    public PersonResponse deletePerson(long id);
+    public Person getPerson(long id);
     public Person[] getAllPeople();
 }
